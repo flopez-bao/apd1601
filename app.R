@@ -17,7 +17,11 @@ ui <- fluidPage(
       ),
       br(),
       fluidRow(
-        downloadButton("download_loc", "Downlod a local file")
+        downloadButton("download_loc", "Download a local file")
+      ),
+      br(),
+      fluidRow(
+        downloadButton("download_zip", "Download a zip file")
       )
     )
 )
@@ -46,7 +50,23 @@ server <- function(input, output) {
     contentType = "application/zip"
   )
   
-    
+  # download a zip
+  output$download_zip <- downloadHandler(
+    filename = function() {
+      paste("output", "zip", sep=".")
+    },
+    content = function(fname) {
+      fs <- c("mtcars.csv")
+      tmpdir <- tempdir()
+      setwd(tempdir())
+      z <- mtcars
+      write.csv(z, "mtcars.csv")
+      
+      zip(zipfile=fname, files=fs)
+    },
+    contentType = "application/zip"
+  )
+  
 }
 
 # Run the application 
